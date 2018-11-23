@@ -1,3 +1,5 @@
 import { renderPhotos } from './pictures';
 
-renderPhotos();
+const pictures = document.querySelector('.pictures');
+
+pictures.appendChild(renderPhotos());
