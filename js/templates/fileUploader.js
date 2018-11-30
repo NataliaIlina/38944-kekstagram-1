@@ -1,5 +1,12 @@
 import AbstractView from '../AbstractView';
-import { EFFECTS, ESC_KEY_CODE } from '../constants';
+import { EFFECTS, ESC_KEY_CODE, ERROR } from '../constants';
+import {
+  checkFirstSimbol,
+  checkMinLength,
+  checkMaxLength,
+  checkTagsAmount,
+  checkUnique,
+} from '../utils';
 
 class fileUploader extends AbstractView {
   constructor() {
@@ -17,6 +24,7 @@ class fileUploader extends AbstractView {
         id="upload-select-image"
         method="post"
         enctype="multipart/form-data"
+        action="https://js.dump.academy/kekstagram"
         autocomplete="off"
       >
         <!-- Изначальное состояние поля для загрузки изображения -->
@@ -163,6 +171,7 @@ class fileUploader extends AbstractView {
     const imageWrapper = form.querySelector('.img-upload__overlay');
     const image = form.querySelector('.img-upload__preview');
     const effectButtons = form.querySelectorAll('.effects__item');
+    const hashtagInput = form.querySelector('.text__hashtags');
     let currentEffect = 'none';
 
     input.addEventListener('change', () => {
@@ -172,7 +181,10 @@ class fileUploader extends AbstractView {
       imageWrapper.classList.add('hidden');
     });
     window.addEventListener('keydown', e => {
-      if (e.keyCode === ESC_KEY_CODE) {
+      if (
+        e.keyCode === ESC_KEY_CODE &&
+        document.activeElement !== hashtagInput
+      ) {
         imageWrapper.classList.add('hidden');
       }
     });
@@ -185,10 +197,38 @@ class fileUploader extends AbstractView {
         }
       }),
     );
+    hashtagInput.addEventListener('input', e => {
+      hashtagInput.setCustomValidity(this.validate(e.target.value));
+    });
   }
 
   show() {
     document.querySelector('.pictures').appendChild(this.element.firstChild);
+  }
+
+  validate(value) {
+    let hashtags = value
+      .toLowerCase()
+      .trim()
+      .split(' ');
+    hashtags = hashtags.filter(Boolean);
+
+    if (!checkFirstSimbol(hashtags)) {
+      return ERROR['firstSymbol'];
+    }
+    if (!checkMinLength(hashtags)) {
+      return ERROR['tooShort'];
+    }
+    if (!checkMaxLength(hashtags)) {
+      return ERROR['tooLong'];
+    }
+    if (!checkTagsAmount(hashtags)) {
+      return ERROR['manyTags'];
+    }
+    if (!checkUnique(hashtags)) {
+      return ERROR['notUnique'];
+    }
+    return '';
   }
 }
 

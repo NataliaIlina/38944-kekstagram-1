@@ -19,3 +19,20 @@ export const getElementFromTemplate = template => {
 export const getUniqueArrayElement = array => {
   return array.splice(getRandomNumber(0, array.length - 1), 1);
 };
+
+export const checkFirstSimbol = hashtags =>
+  hashtags.every(tag => tag[0] === '#');
+export const checkMinLength = hashtags =>
+  hashtags.every(tag => tag.length >= 2);
+export const checkMaxLength = hashtags =>
+  hashtags.every(tag => tag.length < 20);
+export const checkTagsAmount = hashtags => hashtags.length <= 5;
+export const checkUnique = hashtags => {
+  const unique = {};
+  hashtags.forEach(tag => {
+    let el = tag;
+    unique[el] = true;
+  });
+  console.log(Object.keys(unique));
+  return Object.keys(unique).length === hashtags.length;
+};
