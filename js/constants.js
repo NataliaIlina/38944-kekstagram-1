@@ -17,3 +17,32 @@ export const DESCRIPTIONS = [
   'Цените каждое мгновенье. Цените тех, кто рядом с вами и отгоняйте все сомненья. Не обижайте всех словами......',
   'Вот это тачка!',
 ];
+
+export const ESC_KEY_CODE = 27;
+
+export const EFFECTS = [
+  {
+    name: 'none',
+    label: 'Оригинал',
+  },
+  {
+    name: 'chrome',
+    label: 'Хром',
+  },
+  {
+    name: 'sepia',
+    label: 'Сепия',
+  },
+  {
+    name: 'marvin',
+    label: 'Марвин',
+  },
+  {
+    name: 'phobos',
+    label: 'Фобос',
+  },
+  {
+    name: 'heat',
+    label: 'Зной',
+  },
+];

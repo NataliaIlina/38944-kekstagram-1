@@ -1,5 +1,6 @@
 import AbstractView from '../AbstractView';
 import { getRandomNumber } from '../utils';
+import { ESC_KEY_CODE } from '../constants';
 
 class bigPhoto extends AbstractView {
   constructor(data) {
@@ -109,16 +110,22 @@ class bigPhoto extends AbstractView {
     this.element
       .querySelector('.big-picture__cancel')
       .addEventListener('click', e => {
-        this.hide(e);
+        e.preventDefault();
+        this.hide();
       });
+    window.addEventListener('keydown', e => {
+      if (e.keyCode === ESC_KEY_CODE) {
+        e.preventDefault();
+        this.hide();
+      }
+    });
   }
 
   show() {
     document.querySelector('main').appendChild(this.element);
   }
 
-  hide(e) {
-    e.preventDefault();
+  hide() {
     this.element.remove();
   }
 }
