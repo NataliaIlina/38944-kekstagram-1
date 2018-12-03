@@ -11,6 +11,7 @@ import {
 class fileUploader extends AbstractView {
   constructor() {
     super();
+    this.effectvalue = 0;
   }
 
   get template() {
@@ -172,7 +173,39 @@ class fileUploader extends AbstractView {
     const image = form.querySelector('.img-upload__preview');
     const effectButtons = form.querySelectorAll('.effects__item');
     const hashtagInput = form.querySelector('.text__hashtags');
+    const pin = form.querySelector('.effect-level__pin');
+    const scale = form.querySelector('.effect-level__line');
+    const activeScale = form.querySelector('.effect-level__depth');
     let currentEffect = 'none';
+    pin.style.left = this.effectvalue + '%';
+    activeScale.style.width = this.effectvalue + '%';
+
+    pin.addEventListener('mousedown', e => {
+      e.preventDefault();
+
+      const scaleRect = scale.getBoundingClientRect();
+      const minX = scaleRect.left;
+      const maxX = scaleRect.right;
+
+      const onMouseMove = evt => {
+        evt.preventDefault();
+        let coordinateX = evt.clientX;
+        coordinateX = coordinateX < minX ? minX : coordinateX;
+        coordinateX = coordinateX > maxX ? maxX : coordinateX;
+        this.effectvalue = ((coordinateX - minX) * 100) / scale.offsetWidth;
+        activeScale.style.width = this.effectvalue + '%';
+        pin.style.left = this.effectvalue + '%';
+      };
+
+      const onMouseUp = event => {
+        event.preventDefault();
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', onMouseUp);
+      };
+
+      document.addEventListener('mousemove', onMouseMove);
+      document.addEventListener('mouseup', onMouseUp);
+    });
 
     input.addEventListener('change', () => {
       imageWrapper.classList.remove('hidden');
@@ -191,6 +224,9 @@ class fileUploader extends AbstractView {
     Array.from(effectButtons).forEach(btn =>
       btn.addEventListener('click', e => {
         if (e.target.tagName === 'INPUT') {
+          this.effectvalue = 0;
+          pin.style.left = this.effectvalue + '%';
+          activeScale.style.width = this.effectvalue + '%';
           image.classList.remove(`effects__preview--${currentEffect}`);
           image.classList.add(`effects__preview--${e.target.value}`);
           currentEffect = e.target.value;

@@ -33,6 +33,10 @@ export const checkUnique = hashtags => {
     let el = tag;
     unique[el] = true;
   });
-  console.log(Object.keys(unique));
   return Object.keys(unique).length === hashtags.length;
+};
+
+export const getLeftCoord = elem => {
+  var box = elem.getBoundingClientRect();
+  return box.left + pageXOffset;
 };
