@@ -47,6 +47,14 @@ export const EFFECTS = [
   },
 ];
 
+export const STYLE_EFFECT = {
+  chrome: 'grayscale',
+  sepia: 'sepia',
+  marvin: 'invert',
+  phobos: 'blur',
+  heat: 'brightness',
+};
+
 export const ERROR = {
   firstSymbol: 'Хэштег должен начинаться с символа #',
   tooShort: 'Хэштег должен содержать минимум 2 символа',
