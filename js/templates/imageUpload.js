@@ -1,13 +1,16 @@
 import AbstractView from '../AbstractView';
-import { EFFECTS, STYLE_EFFECT, ESC_KEY_CODE } from '../constants';
+import {
+  EFFECTS,
+  STYLE_EFFECT,
+  ESC_KEY_CODE,
+  DEFAULT_EFFECT_VALUE,
+  DEFAULT_CURRENT_EFFECT,
+  DEFAULT_SIZE,
+  MAX_SIZE,
+  MIN_SIZE,
+  SIZE_STEP,
+} from '../constants';
 import { getEffectValue, validateHashtags } from '../utils';
-
-const DEFAULT_EFFECT_VALUE = 100;
-const DEFAULT_CURRENT_EFFECT = 'none';
-const DEFAULT_SIZE = 100;
-const MAX_SIZE = 100;
-const MIN_SIZE = 25;
-const SIZE_STEP = 25;
 
 class ImageUpload extends AbstractView {
   constructor() {
@@ -150,6 +153,7 @@ class ImageUpload extends AbstractView {
     const minusButton = element.querySelector('.scale__control--smaller');
     const plusButton = element.querySelector('.scale__control--bigger');
     const sizeInput = element.querySelector('.scale__control--value');
+    const commentInput = element.querySelector('.text__description');
 
     minusButton.addEventListener('click', () => {
       if (sizeInput.value > MIN_SIZE) {
@@ -181,10 +185,13 @@ class ImageUpload extends AbstractView {
     setValue();
 
     window.addEventListener('keydown', e => {
-      if (
-        e.keyCode === ESC_KEY_CODE &&
-        document.activeElement !== hashtagInput
-      ) {
+      if (e.keyCode === ESC_KEY_CODE) {
+        if (
+          document.activeElement === hashtagInput ||
+          document.activeElement === commentInput
+        ) {
+          return;
+        }
         element.remove();
       }
     });

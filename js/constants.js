@@ -1,4 +1,10 @@
 export const TOTAL_PICTURES_NUMBER = 25;
+export const DEFAULT_EFFECT_VALUE = 100;
+export const DEFAULT_CURRENT_EFFECT = 'none';
+export const DEFAULT_SIZE = 100;
+export const MAX_SIZE = 100;
+export const MIN_SIZE = 25;
+export const SIZE_STEP = 25;
 
 export const COMMENTS = [
   'Всё отлично!',
