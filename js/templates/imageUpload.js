@@ -4,11 +4,15 @@ import { getEffectValue, validateHashtags } from '../utils';
 
 const DEFAULT_EFFECT_VALUE = 100;
 const DEFAULT_CURRENT_EFFECT = 'none';
+const DEFAULT_SIZE = 100;
+const MAX_SIZE = 100;
+const MIN_SIZE = 25;
+const SIZE_STEP = 25;
 
 class ImageUpload extends AbstractView {
   constructor() {
     super();
-    this.sizeValue = 100;
+    this.sizeValue = DEFAULT_SIZE;
     this.currentEffect = DEFAULT_CURRENT_EFFECT;
     this.effectvalue = DEFAULT_EFFECT_VALUE;
   }
@@ -143,7 +147,22 @@ class ImageUpload extends AbstractView {
     const scale = element.querySelector('.effect-level__line');
     const scaleElement = element.querySelector('.img-upload__effect-level');
     const hashtagInput = element.querySelector('.text__hashtags');
-    const submitButton = element.querySelector('.img-upload__submit');
+    const minusButton = element.querySelector('.scale__control--smaller');
+    const plusButton = element.querySelector('.scale__control--bigger');
+    const sizeInput = element.querySelector('.scale__control--value');
+
+    minusButton.addEventListener('click', () => {
+      if (sizeInput.value > MIN_SIZE) {
+        sizeInput.value -= SIZE_STEP;
+        image.style.transform = `scale(0.${sizeInput.value})`;
+      }
+    });
+    plusButton.addEventListener('click', () => {
+      if (sizeInput.value < MAX_SIZE) {
+        sizeInput.value = +sizeInput.value + SIZE_STEP;
+        image.style.transform = `scale(${sizeInput.value / 100})`;
+      }
+    });
 
     const setValue = (
       effectvalue = DEFAULT_EFFECT_VALUE,
