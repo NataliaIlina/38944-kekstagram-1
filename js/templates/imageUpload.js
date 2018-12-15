@@ -154,6 +154,7 @@ class ImageUpload extends AbstractView {
     const plusButton = element.querySelector('.scale__control--bigger');
     const sizeInput = element.querySelector('.scale__control--value');
     const commentInput = element.querySelector('.text__description');
+    const closeButton = element.querySelector('.img-upload__cancel');
 
     minusButton.addEventListener('click', () => {
       if (sizeInput.value > MIN_SIZE) {
@@ -183,6 +184,10 @@ class ImageUpload extends AbstractView {
     element.querySelector('#effect-none').checked = true;
     scaleElement.classList.add('hidden');
     setValue();
+
+    closeButton.addEventListener('click', () => {
+      element.remove();
+    });
 
     window.addEventListener('keydown', e => {
       if (e.keyCode === ESC_KEY_CODE) {

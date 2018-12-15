@@ -127,6 +127,7 @@ class bigPhoto extends AbstractView {
 
   hide() {
     this.element.remove();
+    document.querySelector('body').classList.remove('modal-open');
   }
 }
 export default bigPhoto;
