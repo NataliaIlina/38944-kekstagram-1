@@ -1,5 +1,7 @@
 import AbstractView from '../AbstractView';
 import ImageUpload from './imageUpload';
+import Loader from '../loader/loader';
+import SuccessModal from './successModal';
 
 class fileUploader extends AbstractView {
   constructor() {
@@ -15,10 +17,10 @@ class fileUploader extends AbstractView {
       <form
         class="img-upload__form"
         id="upload-select-image"
+        autocomplete="off"
         method="post"
         enctype="multipart/form-data"
         action="https://js.dump.academy/kekstagram"
-        autocomplete="off"
       >
       
         <!-- Изначальное состояние поля для загрузки изображения -->
@@ -44,9 +46,22 @@ class fileUploader extends AbstractView {
   bind(element) {
     const form = element.querySelector('.img-upload__form');
     const input = element.querySelector('#upload-file');
+    const imagePreview = new ImageUpload();
 
     input.addEventListener('change', () => {
-      form.appendChild(new ImageUpload().element);
+      form.appendChild(imagePreview.element);
+    });
+
+    form.addEventListener('submit', evt => {
+      evt.preventDefault();
+      const data = new FormData(form);
+      Loader.uploadImage(data).then(() => {
+        imagePreview.hide();
+        document.body.insertAdjacentElement(
+          `afterbegin`,
+          new SuccessModal().element,
+        );
+      });
     });
   }
 

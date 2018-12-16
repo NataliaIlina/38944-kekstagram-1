@@ -51,16 +51,15 @@ class bigPhoto extends AbstractView {
         <ul class="social__comments">
         ${this.comments
           .map(
-            comment =>
-              `<li class="social__comment">
+            comment => `<li class="social__comment">
                 <img
                   class="social__picture"
-                  src="img/avatar-${getRandomNumber(1, 6)}.svg"
-                  alt="Аватар комментатора фотографии"
+                  src="${comment.avatar}"
+                  alt="${comment.name}"
                   width="35"
                   height="35"
                 />
-                <p class="social__text">${comment}</p>
+                <p class="social__text">${comment.message}</p>
               </li>`,
           )
           .join('')}

@@ -250,6 +250,10 @@ class ImageUpload extends AbstractView {
       hashtagInput.setCustomValidity(validateHashtags(e.target.value));
     });
   }
+
+  hide() {
+    this.element.remove();
+  }
 }
 
 export default ImageUpload;
