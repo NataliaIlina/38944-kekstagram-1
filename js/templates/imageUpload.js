@@ -240,7 +240,7 @@ class ImageUpload extends AbstractView {
           image.classList.remove(`effects__preview--${this.currentEffect}`);
           image.classList.add(`effects__preview--${e.target.value}`);
           this.currentEffect = e.target.value;
-          image.style = '';
+          image.style.filter = '';
           setValue(DEFAULT_EFFECT_VALUE, e.target.value);
         }
       }),

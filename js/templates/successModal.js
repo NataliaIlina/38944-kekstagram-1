@@ -22,6 +22,10 @@ class SuccessModal extends AbstractView {
       element.remove();
     });
   }
+
+  show() {
+    document.body.insertAdjacentElement(`afterbegin`, this.element);
+  }
 }
 
 export default SuccessModal;

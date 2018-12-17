@@ -21,6 +21,18 @@ class ErrorModal extends AbstractView {
     </div>
   </section>`;
   }
+
+  bind(element) {
+    const buttons = element.querySelectorAll('.error__button');
+
+    Array.from(buttons).forEach(button =>
+      button.addEventListener('click', () => element.remove()),
+    );
+  }
+
+  show() {
+    document.body.insertAdjacentElement(`afterbegin`, this.element);
+  }
 }
 
 export default ErrorModal;

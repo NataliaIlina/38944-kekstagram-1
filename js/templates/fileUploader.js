@@ -55,12 +55,11 @@ class fileUploader extends AbstractView {
     form.addEventListener('submit', evt => {
       evt.preventDefault();
       const data = new FormData(form);
-      Loader.uploadImage(data).then(() => {
+      Loader.uploadImage(data).then(data => {
         imagePreview.hide();
-        document.body.insertAdjacentElement(
-          `afterbegin`,
-          new SuccessModal().element,
-        );
+        if (data) {
+          new SuccessModal().show();
+        }
       });
     });
   }
