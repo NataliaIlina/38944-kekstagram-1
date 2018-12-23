@@ -22,7 +22,7 @@ class ImageUpload extends AbstractView {
 
   get template() {
     return `
-        <div class="img-upload__overlay">
+        <div class="img-upload__overlay hidden">
           <div class="img-upload__wrapper">
             <div class="img-upload__preview-container">
               <!-- Изменение размера изображения -->
@@ -156,39 +156,27 @@ class ImageUpload extends AbstractView {
     const commentInput = element.querySelector('.text__description');
     const closeButton = element.querySelector('.img-upload__cancel');
 
+    // выставляем дефолтные настройки
+    this.setDefaultFormValues();
+    // изменяем размер изображения
     minusButton.addEventListener('click', () => {
       if (sizeInput.value > MIN_SIZE) {
-        sizeInput.value -= SIZE_STEP;
-        image.style.transform = `scale(0.${sizeInput.value})`;
+        const size = sizeInput.value - SIZE_STEP;
+        this.setImageSize(size);
       }
     });
     plusButton.addEventListener('click', () => {
       if (sizeInput.value < MAX_SIZE) {
-        sizeInput.value = +sizeInput.value + SIZE_STEP;
-        image.style.transform = `scale(${sizeInput.value / 100})`;
+        const size = +sizeInput.value + SIZE_STEP;
+        this.setImageSize(size);
       }
     });
-
-    const setValue = (
-      effectvalue = DEFAULT_EFFECT_VALUE,
-      currentEffect = DEFAULT_CURRENT_EFFECT,
-    ) => {
-      valueInput.value = Math.round(effectvalue);
-      activeScale.style.width = effectvalue + '%';
-      pin.style.left = effectvalue + '%';
-      image.style.filter =
-        STYLE_EFFECT[currentEffect] +
-        `(${getEffectValue(effectvalue, currentEffect)})`;
-    };
-
-    element.querySelector('#effect-none').checked = true;
-    scaleElement.classList.add('hidden');
-    setValue();
-
-    closeButton.addEventListener('click', () => {
-      element.remove();
+    // закрытие окна на кнопку и на клавишу Esc
+    closeButton.addEventListener('click', evt => {
+      evt.preventDefault();
+      this.setDefaultFormValues();
+      this.hide();
     });
-
     window.addEventListener('keydown', e => {
       if (e.keyCode === ESC_KEY_CODE) {
         if (
@@ -197,10 +185,11 @@ class ImageUpload extends AbstractView {
         ) {
           return;
         }
-        element.remove();
+        this.setDefaultFormValues();
+        this.hide();
       }
     });
-
+    // движение пина
     pin.addEventListener('mousedown', e => {
       e.preventDefault();
       const scaleRect = scale.getBoundingClientRect();
@@ -215,7 +204,7 @@ class ImageUpload extends AbstractView {
           coordinateX < minX ? minX : coordinateX > maxX ? maxX : coordinateX;
 
         this.effectvalue = ((coordinateX - minX) * 100) / scale.offsetWidth;
-        setValue(this.effectvalue, this.currentEffect);
+        this.setEffectValue(this.effectvalue, this.currentEffect);
       };
 
       const onMouseUp = event => {
@@ -227,7 +216,7 @@ class ImageUpload extends AbstractView {
       document.addEventListener('mousemove', onMouseMove);
       document.addEventListener('mouseup', onMouseUp);
     });
-
+    // смена эффекта изображения
     Array.from(effectButtons).forEach(btn =>
       btn.addEventListener('click', e => {
         if (e.target.tagName === 'INPUT') {
@@ -236,23 +225,68 @@ class ImageUpload extends AbstractView {
           } else {
             scaleElement.classList.remove('hidden');
           }
-          this.effectValue = DEFAULT_EFFECT_VALUE;
-          image.classList.remove(`effects__preview--${this.currentEffect}`);
-          image.classList.add(`effects__preview--${e.target.value}`);
-          this.currentEffect = e.target.value;
-          image.style.filter = '';
-          setValue(DEFAULT_EFFECT_VALUE, e.target.value);
+          this.setImageClass(this.currentEffect, e.target.value);
+          this.setEffectValue(DEFAULT_EFFECT_VALUE, e.target.value);
         }
       }),
     );
-
+    // валидация ввода хэштегов
     hashtagInput.addEventListener('input', e => {
       hashtagInput.setCustomValidity(validateHashtags(e.target.value));
     });
   }
-
+  // показываем элемент
+  show() {
+    this.element
+      .querySelector('.img-upload__overlay')
+      .classList.remove('hidden');
+  }
+  // скрываем элемент
   hide() {
-    this.element.remove();
+    this.element.querySelector('.img-upload__overlay').classList.add('hidden');
+  }
+  // устанавливает значение насыщенности текущего эффекта
+  setEffectValue(
+    effectvalue = DEFAULT_EFFECT_VALUE,
+    currentEffect = DEFAULT_CURRENT_EFFECT,
+  ) {
+    const pin = this.element.querySelector('.effect-level__pin');
+    const valueInput = this.element.querySelector('.effect-level__value');
+    const activeScale = this.element.querySelector('.effect-level__depth');
+    const image = this.element.querySelector('.img-upload__preview');
+
+    valueInput.value = Math.round(effectvalue);
+    activeScale.style.width = effectvalue + '%';
+    pin.style.left = effectvalue + '%';
+    image.style.filter =
+      effectvalue === DEFAULT_EFFECT_VALUE
+        ? ''
+        : STYLE_EFFECT[currentEffect] +
+          `(${getEffectValue(effectvalue, currentEffect)})`;
+  }
+  // устанавливает класс изображению, соотв текущему эффеткту
+  setImageClass(oldClassName = this.currentEffect, newClassName = 'none') {
+    const image = this.element.querySelector('.img-upload__preview');
+    image.classList.remove(`effects__preview--${oldClassName}`);
+    image.classList.add(`effects__preview--${newClassName}`);
+    this.currentEffect = newClassName;
+  }
+  // устанавливает размер изображения
+  setImageSize(size = DEFAULT_SIZE) {
+    const image = this.element.querySelector('.img-upload__preview');
+    const sizeInput = this.element.querySelector('.scale__control--value');
+    sizeInput.value = size;
+    image.style.transform = `scale(${size / 100})`;
+  }
+  // устанавливает дефолтные значения формы
+  setDefaultFormValues() {
+    this.element.querySelector('#effect-none').checked = true;
+    this.element
+      .querySelector('.img-upload__effect-level')
+      .classList.add('hidden');
+    this.setEffectValue();
+    this.setImageClass();
+    this.setImageSize();
   }
 }
 

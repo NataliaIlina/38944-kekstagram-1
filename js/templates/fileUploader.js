@@ -47,9 +47,10 @@ class fileUploader extends AbstractView {
     const form = element.querySelector('.img-upload__form');
     const input = element.querySelector('#upload-file');
     const imagePreview = new ImageUpload();
+    form.appendChild(imagePreview.element);
 
     input.addEventListener('change', () => {
-      form.appendChild(imagePreview.element);
+      imagePreview.show();
     });
 
     form.addEventListener('submit', evt => {
@@ -57,6 +58,7 @@ class fileUploader extends AbstractView {
       const data = new FormData(form);
       Loader.uploadImage(data).then(data => {
         imagePreview.hide();
+        imagePreview.setDefaultFormValues();
         if (data) {
           new SuccessModal().show();
         }

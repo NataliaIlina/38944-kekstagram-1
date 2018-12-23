@@ -35,6 +35,7 @@ export const EFFECTS = [
 ];
 
 export const STYLE_EFFECT = {
+  none: 'none',
   chrome: 'grayscale',
   sepia: 'sepia',
   marvin: 'invert',
